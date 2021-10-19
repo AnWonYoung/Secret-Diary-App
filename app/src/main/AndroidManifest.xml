@@ -9,13 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SecretDiaryApp">
+        <!--    NoActionBar, 액션바 없애기    -->
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.Design.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -23,5 +23,4 @@
             android:theme="@style/Theme.Design.NoActionBar">
         </activity>
     </application>
-
 </manifest>

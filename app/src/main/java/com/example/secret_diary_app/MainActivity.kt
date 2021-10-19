@@ -35,15 +35,12 @@ class MainActivity : AppCompatActivity() {
                 maxValue = 9
             }
     }
-
     private val openButton : AppCompatButton by lazy {
         findViewById<AppCompatButton>(R.id.openButton)
     }
-
     private val changePasswordButton : AppCompatButton by lazy {
         findViewById<AppCompatButton>(R.id.changePasswordButton)
     }
-
     private var changePasswordMode = false // 예외처리
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,25 +55,28 @@ class MainActivity : AppCompatActivity() {
         // 눌렀을 때 저장된 비번을 가져와서, numberPicker와 비교를 해주어야 함
         // 그전에 미리 비밀번호를 저장해야 하는데, 방법은 총 두 가지가 있음
         // 1. local DB 2. 파일에 직접 할때 (편하게 sharedPreferences를 사용할 수 있음)
-        openButton.setOnClickListener{ // Preferences 파일을 다른 앱과 같이 사용할 수 있도록 하는 기능
-            if(changePasswordMode) { //  비밀번호를 변경했을 땐 다른 작동이 불가능 하도록
+        openButton.setOnClickListener { // Preferences 파일을 다른 앱과 같이 사용할 수 있도록 하는 기능
+            if (changePasswordMode) { //  비밀번호를 변경했을 땐 다른 작동이 불가능 하도록
                 Toast.makeText(this, "비밀번호 변경 중입니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val passwordPreferences = getSharedPreferences("password", Context.MODE_PRIVATE) // 비밀번호를 다른 앱과 공유하지 않도록 MODE_PRIVATE 설정
+            val passwordPreferences = getSharedPreferences(
+                "password",
+                Context.MODE_PRIVATE
+            ) // 비밀번호를 다른 앱과 공유하지 않도록 MODE_PRIVATE 설정
 
             val userPassword = "${numberPicker1.value}${numberPicker2.value}${numberPicker3.value}"
 
             if (passwordPreferences.getString("password", "000") // key 값은 password
-                .equals(userPassword)) {
+                    .equals(userPassword)
+            ) {
 //                성공했을 때 (다이어리를 열었을 때 실행 내부 액티비티가 열림)
                 startActivity(Intent(this, DiaryActivity::class.java))
             } else {
                 alertDialog()
             }
         }
-
         changePasswordButton.setOnClickListener{
             val passwordPreferences = getSharedPreferences("password", Context.MODE_PRIVATE) // 비밀번호를 다른 앱과 공유하지 않도록 MODE_PRIVATE 설정
             val userPassword = "${numberPicker1.value}${numberPicker2.value}${numberPicker3.value}"
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 // 변경한 비밀번호를 저장할 수 있도록 구현
                 val passwordPreferences = getSharedPreferences("password", Context.MODE_PRIVATE)
 
-                passwordPreferences.edit { // edit을 람다형식으로 돌리면서 commit에 관한 오류를 예방할 수 있음
+                passwordPreferences.edit { // edit을 람다 형식으로 돌리면서 commit에 관한 오류를 예방할 수 있음
                     val userPassword = "${numberPicker1.value}${numberPicker2.value}${numberPicker3.value}"
                      putString("password", userPassword)
                      commit() // commit은 다 저장될 때까지 ui를 기다리는, apply는 비동기적으로 다음 실행을 할 수 있도록 함
@@ -93,7 +93,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 changePasswordMode = false  // 비밀변경 변동 완료 후 비활성화
                 changePasswordButton.setBackgroundColor(Color.parseColor("FF6200EE"))
-
             }else {
                 // Mode가 활성화 되도록 > 비밀번호가 맞는지를 체크
                 // 현재는 변경 모드가 활성화 된 것
@@ -102,13 +101,11 @@ class MainActivity : AppCompatActivity() {
                     changePasswordMode = true // << 패스워드 버튼을 누르고 변경이 가능할 때
                     Toast.makeText(this, "변경할 패스워드를 입력해주세요", Toast.LENGTH_SHORT).show()
                     changePasswordButton.setBackgroundColor(Color.RED) // 레드가 들어오면 활성화가 된 것
-
                 } else {
                     alertDialog()
                 }
             }
         }
-
     }
 // Dialog 함수로 빼기
     private fun alertDialog() {
@@ -122,3 +119,12 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 }
+
+/* commit, apply
+ * commit은 ui가 작업이 끝날때까지 화면이 멈추는데,
+ * 따라서 ui 스레드에서는 무거운 작업을 되도록 피해야 한다.
+ * 오래 ui스레드가 멈춰있으면 사용자가 그 시간 동안 입력을 받을 수 없으며
+ * app이 멈추거나 혹은 죽었다 인식을 하게 되고, 실제로 앱 실행 또한
+ * 원활하지 않을 수 있다.
+ */
+

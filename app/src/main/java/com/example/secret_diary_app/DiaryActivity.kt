@@ -30,6 +30,7 @@ class DiaryActivity : AppCompatActivity() {
         val detailPrefer : SharedPreferences = getSharedPreferences("diary", Context.MODE_PRIVATE)
         diaryContext.setText(detailPrefer.getString("context", " ")) // diary안에 저장되어 있는 context를 가져올 것, 없다면 빈 text를 반환
 
+// getSharedPreferences를 이용한 자동저장 및 임시저장 구현
 
         val runnable = Runnable {
             getSharedPreferences("diary", Context.MODE_PRIVATE).edit {

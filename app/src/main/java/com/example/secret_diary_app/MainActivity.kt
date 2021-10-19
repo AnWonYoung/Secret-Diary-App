@@ -1,6 +1,7 @@
 package com.example.secret_diary_app
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -69,8 +70,8 @@ class MainActivity : AppCompatActivity() {
 
             if (passwordPreferences.getString("password", "000") // key 값은 password
                 .equals(userPassword)) {
-//                성공했을 때
-//                startActivity()
+//                성공했을 때 (다이어리를 열었을 때 실행 내부 액티비티가 열림)
+                startActivity(Intent(this, DiaryActivity::class.java))
             } else {
                 alertDialog()
             }
